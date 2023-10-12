@@ -48,7 +48,8 @@ gallery.addEventListener('click', (e) => {
     }
 });
 
-const overlay = document.querySelector('.overlay');
+//const overlay = document.querySelector('.overlay');
+
 function displayEmployeeModal (card) {
 
     //check the name like: it was just name not first name required
@@ -85,10 +86,6 @@ function displayEmployeeModal (card) {
         }
     });
 }
-
-
-
-
 
 function displayEmployees(data) {
     data.map(item => {
