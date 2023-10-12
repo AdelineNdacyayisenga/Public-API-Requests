@@ -15,7 +15,7 @@ search.insertAdjacentHTML('beforeend', searchHTML);
 //fetch data
 async function getData() {
     try {
-        const response = await fetch('https://randomuser.me/api/?results=12');
+        const response = await fetch('https://randomuser.me/api/?nat=us&results=12');
         if(!response.ok) throw new Error("Something went wrong");
         const data = await response.json();
         employeeCards = data.results;
@@ -44,18 +44,20 @@ gallery.addEventListener('click', (e) => {
     }
 });
 
+
+
 //const overlay = document.querySelector('.overlay');
 
 function displayEmployeeModal (card) {
     //check the name like: it was just name not first name required
-    console.log(card);
+    
     const modelHTML = `
         <div class="modal-container">
             <div class="modal">
                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                 <div class="modal-info-container">
                     <img class="modal-img" src="${card.picture.thumbnail}" alt="profile picture">
-                    <h3 id="name" class="modal-name cap">${card.name.first}</h3>
+                    <h3 id="name" class="modal-name cap">${card.name.first} ${card.name.last}</h3>
                     <p class="modal-text">${card.email}</p>
                     <p class="modal-text cap">${card.location.city}</p>
                     <hr>
@@ -63,6 +65,11 @@ function displayEmployeeModal (card) {
                     <p class="modal-text">${card.location.street.number} ${card.location.street.name}, ${card.location.city}, ${card.location.state}, ${card.location.postcode}</p>
                     <p class="modal-text">Birthday: ${formatDOB(card.dob.date)}</p>
                 </div>
+            </div>
+
+            <div class="modal-btn-container">
+                <button type="button" id="modal-prev" class="modal-prev btn">Prev</button>
+                <button type="button" id="modal-next" class="modal-next btn">Next</button>
             </div>
         </div>
     `;
@@ -73,8 +80,57 @@ function displayEmployeeModal (card) {
         if(e.target.className === 'modal-close-btn' || e.target.innerText === 'X') {
             currentValue.remove();
         }
+
+        //close the modal when user clicks outside the modal
+        if(e.target.className === 'modal-container') {
+            const isOutside = !e.target.closest('.modal-info-container');
+            
+            if(isOutside) {
+                currentValue.remove();
+            }
+        } 
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if(e.key === 'Escape') {
+          currentValue.remove();
+        }
+      });
+
+    const prevButton = document.getElementById('modal-prev');
+    const nextButton = document.querySelector('#modal-next');
+    const cards = document.querySelectorAll('.card');
+
+    //console.log(prevButton)
+    //console.log(nextButton)
+    //console.log(cards)
+
+    let cardIndex = 0;
+    for(let i = 0; i < cards.length; i ++) {
+        const currentCard = cards[i];
+        currentCard.addEventListener('click', () => {
+            cardIndex = i;
+        })
+        currentCard.style.display = 'block';
+    }
+
+    prevButton.addEventListener('click', () => {
+        cardIndex = cardIndex -1;
+        if(cardIndex < 0) {
+            cardindex = cards.length - 1;
+        }
+        cards[cardIndex].style.display = 'block';
+    });
+
+    nextButton.addEventListener('click', () => {
+        cardIndex = cardIndex + 1 ; //%cards.length
+        cards[cardIndex].style.display = 'block';
     });
 }
+
+
+
+
 
 function formatCell (phoneString) {
     const cleaned = ('' + phoneString).replace(/\D/g, '');
@@ -89,13 +145,20 @@ function formatDOB (dob) {
     return date.replace(/(\d{4})(\d{2})(\d{2})/, "$2/$3/$1");
 }
 
-// //when user clicks outside the modal
-// body.addEventListener('click', e => {
-//     const isOutside = !e.target.closest('.modal');
-//     if(isOutside) {
-//         body.lastChild.remove();
-//     }
-// });
+//search functionality
+
+search.addEventListener('keyup', e => {
+    let currentValue = e.target.value.toLowerCase();
+    let employees = document.querySelectorAll('h3.card-name');
+
+    employees.forEach(employee => {
+        if(employee.textContent.toLowerCase().includes(currentValue)) {
+            employee.parentNode.parentNode.style.display = 'block';
+        } else {
+            employee.parentNode.parentNode.style.display = 'none';
+        }
+    });
+});
 
 function displayEmployees(data) {
     data.map(item => {
@@ -113,6 +176,7 @@ function displayEmployees(data) {
         `;
         gallery.insertAdjacentHTML('beforeend', galleryHTML);
     });
+
 }
 getData();
 
