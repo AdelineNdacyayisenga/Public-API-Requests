@@ -3,10 +3,6 @@ const search = document.querySelector('.search-container');
 const gallery = document.getElementById('gallery');
 const body = document.querySelector('body');
 
-const overlayElem = document.createElement('div');
-overlayElem.classList.add('overlay');
-body.appendChild(overlayElem);
-
 /* HTML */
 const searchHTML = `
     <form action="#" method="get">
@@ -51,8 +47,8 @@ gallery.addEventListener('click', (e) => {
 //const overlay = document.querySelector('.overlay');
 
 function displayEmployeeModal (card) {
-
     //check the name like: it was just name not first name required
+    console.log(card);
     const modelHTML = `
         <div class="modal-container">
             <div class="modal">
@@ -63,29 +59,43 @@ function displayEmployeeModal (card) {
                     <p class="modal-text">${card.email}</p>
                     <p class="modal-text cap">${card.location.city}</p>
                     <hr>
-                    <p class="modal-text">${card.cell}</p>
-                    <p class="modal-text">${card.location.street}, ${card.location.city}, ${card.location.state} ${card.location.postcode}</p>
-                    <p class="modal-text">Birthday: ${card.dob.date}</p>
+                    <p class="modal-text">${formatCell(card.cell)}</p>
+                    <p class="modal-text">${card.location.street.number} ${card.location.street.name}, ${card.location.city}, ${card.location.state}, ${card.location.postcode}</p>
+                    <p class="modal-text">Birthday: ${formatDOB(card.dob.date)}</p>
                 </div>
             </div>
         </div>
     `;
     body.insertAdjacentHTML('beforeend', modelHTML);
-    //overlay.insertAdjacentHTML('beforeend', modelHTML);
-    
-    //why is it requiring me to double click?
-    document.querySelector('.modal-close-btn').addEventListener('click', e => {
-        body.lastChild.remove();
-    });
-
-    //when user clicks outside the modal
-    body.addEventListener('click', e => {
-        const isOutside = !e.target.closest('.modal');
-        if(isOutside) {
-            body.lastChild.remove();
+    const currentValue = body.querySelector('.modal-container');
+    //close modal when user clicks the X or button
+    document.addEventListener('click', e => {
+        if(e.target.className === 'modal-close-btn' || e.target.innerText === 'X') {
+            currentValue.remove();
         }
     });
 }
+
+function formatCell (phoneString) {
+    const cleaned = ('' + phoneString).replace(/\D/g, '');
+    if(cleaned.length === 10) {
+        return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, "($1) $2-$3")
+    }   
+}
+
+function formatDOB (dob) {
+    const cleaned = ('' + dob).replace(/\D/g, '');
+    const date = cleaned.substring(0,8);
+    return date.replace(/(\d{4})(\d{2})(\d{2})/, "$2/$3/$1");
+}
+
+// //when user clicks outside the modal
+// body.addEventListener('click', e => {
+//     const isOutside = !e.target.closest('.modal');
+//     if(isOutside) {
+//         body.lastChild.remove();
+//     }
+// });
 
 function displayEmployees(data) {
     data.map(item => {
