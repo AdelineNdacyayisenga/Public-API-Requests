@@ -149,37 +149,27 @@ function formatDOB (dob) {
 }
 
 //search functionality
-let matchingEmployees = [];
 search.addEventListener('keyup', e => {
+    let matchingEmployees = [];
     let currentValue = e.target.value.toLowerCase();
     let employees = document.querySelectorAll('h3.card-name');
     
-    // employeeCards.forEach(employee => {
-    //     const name = `${employee.name.first} ${employee.name.last}`;
-    //     if(name.includes(currentValue)) {
-    //         matchingEmployees.push(employee);
-    //     }
-    // });
-    // console.log(matchingEmployees);
-    // displayEmployees(matchingEmployees);
-    // if(matchingEmployees.length === 0) {
-    //     const html = '<h3>Sorry, No Results found</h3>';
-    //     body.insertAdjacentHTML('beforeend', html);
-    // }
-    
-    employees.forEach(employee => {
-        if(employee.textContent.toLowerCase().includes(currentValue)) {
-            const name = employee.textContent;
-            const match = employeeCards.find(card => `${card.name.first} ${card.name.last}` === name);
-            matchingEmployees.push(match);
+    employeeCards.forEach(employee => {
+        const name = `${employee.name.first} ${employee.name.last}`;
+        if(name.includes(currentValue)) {
+            matchingEmployees.push(employee);
         }
     });
-    displayEmployees(matchingEmployees);
-    if(matchingEmployees.length === 0) {
+    if (currentValue.length === 0) {
+        gallery.innerHTML = '';
+        displayEmployees(employeeCards);
+    } else if (currentValue.length !== 0 && matchingEmployees.length !== 0) {
+        gallery.innerHTML = '';
+        displayEmployees(matchingEmployees);
+    } else if(currentValue.length !== 0 && matchingEmployees.length === 0) {
         const html = '<h3>Sorry, No Results found</h3>';
-        body.insertAdjacentHTML('beforeend', html);
+        gallery.innerHTML = html;
     } 
-    
 });
 
 function displayEmployees(data) {
