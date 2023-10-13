@@ -153,13 +153,19 @@ search.addEventListener('keyup', e => {
     let currentValue = e.target.value.toLowerCase();
     let employees = document.querySelectorAll('h3.card-name');
 
+    let html = '';
     employees.forEach(employee => {
         if(employee.textContent.toLowerCase().includes(currentValue)) {
             employee.parentNode.parentNode.style.display = 'block';
         } else {
             employee.parentNode.parentNode.style.display = 'none';
+            if(html.length === 0) {
+                html += '<h3>Sorry, No Results found</h3>';
+                body.insertAdjacentHTML('beforeend', html);
+            }
         }
     });
+    
 });
 
 function displayEmployees(data) {
