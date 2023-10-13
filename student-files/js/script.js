@@ -49,10 +49,10 @@ gallery.addEventListener('click', (e) => {
 //const overlay = document.querySelector('.overlay');
 
 function displayEmployeeModal (card) {
-    //check the name like: it was just name not first name required
     
+    console.log(card);
     const modelHTML = `
-        <div class="modal-container">
+        <div class="modal-container" data-index="${employeeCards.indexOf(card)}">
             <div class="modal">
                 <button type="button" id="modal-close-btn" class="modal-close-btn"><strong>X</strong></button>
                 <div class="modal-info-container">
@@ -97,40 +97,33 @@ function displayEmployeeModal (card) {
         }
       });
 
-    const prevButton = document.getElementById('modal-prev');
-    const nextButton = document.querySelector('#modal-next');
-    const cards = document.querySelectorAll('.card');
-
-    //console.log(prevButton)
-    //console.log(nextButton)
-    //console.log(cards)
-
-    let cardIndex = 0;
-    for(let i = 0; i < cards.length; i ++) {
-        const currentCard = cards[i];
-        currentCard.addEventListener('click', () => {
-            cardIndex = i;
-        })
-        currentCard.style.display = 'block';
-    }
-
-    prevButton.addEventListener('click', () => {
-        cardIndex = cardIndex -1;
-        if(cardIndex < 0) {
-            cardindex = cards.length - 1;
-        }
-        cards[cardIndex].style.display = 'block';
-    });
-
-    nextButton.addEventListener('click', () => {
-        cardIndex = cardIndex + 1 ; //%cards.length
-        cards[cardIndex].style.display = 'block';
-    });
 }
 
 
 
 
+document.addEventListener('click', e => {
+    if(e.target.closest('.modal-prev')) {
+        const prevButton = document.getElementById('modal-prev');
+        const nextButton = document.querySelector('#modal-next');
+        const cards = document.querySelectorAll('.card');
+        
+        const modelCont = document.querySelector('.modal-container');
+        const currentIndex = +modelCont.dataset.index;
+        const currentCardName = cards[currentIndex].querySelector('h3').textContent;
+        const previousCardName = cards[currentIndex-1].querySelector('h3').textContent;
+        
+        const sameEmployee = employeeCards.find(employee => `${employee.name.first} ${employee.name.last}` === previousCardName);
+        displayEmployeeModal(sameEmployee);
+        // if(currentIndex === 0) {
+        //     //cards[currentIndex].remove();
+        //     currentIndex = cards.length - 1;
+        //     displayEmployeeModal(cards[currentIndex]);
+            
+        // } 
+        
+    }
+});
 
 function formatCell (phoneString) {
     const cleaned = ('' + phoneString).replace(/\D/g, '');
