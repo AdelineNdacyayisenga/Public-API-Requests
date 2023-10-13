@@ -149,22 +149,36 @@ function formatDOB (dob) {
 }
 
 //search functionality
+let matchingEmployees = [];
 search.addEventListener('keyup', e => {
     let currentValue = e.target.value.toLowerCase();
     let employees = document.querySelectorAll('h3.card-name');
-
-    let html = '';
+    
+    // employeeCards.forEach(employee => {
+    //     const name = `${employee.name.first} ${employee.name.last}`;
+    //     if(name.includes(currentValue)) {
+    //         matchingEmployees.push(employee);
+    //     }
+    // });
+    // console.log(matchingEmployees);
+    // displayEmployees(matchingEmployees);
+    // if(matchingEmployees.length === 0) {
+    //     const html = '<h3>Sorry, No Results found</h3>';
+    //     body.insertAdjacentHTML('beforeend', html);
+    // }
+    
     employees.forEach(employee => {
         if(employee.textContent.toLowerCase().includes(currentValue)) {
-            employee.parentNode.parentNode.style.display = 'block';
-        } else {
-            employee.parentNode.parentNode.style.display = 'none';
-            if(html.length === 0) {
-                html += '<h3>Sorry, No Results found</h3>';
-                body.insertAdjacentHTML('beforeend', html);
-            }
+            const name = employee.textContent;
+            const match = employeeCards.find(card => `${card.name.first} ${card.name.last}` === name);
+            matchingEmployees.push(match);
         }
     });
+    displayEmployees(matchingEmployees);
+    if(matchingEmployees.length === 0) {
+        const html = '<h3>Sorry, No Results found</h3>';
+        body.insertAdjacentHTML('beforeend', html);
+    } 
     
 });
 
