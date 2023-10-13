@@ -184,7 +184,7 @@ search.addEventListener('keyup', e => {
     let employees = document.querySelectorAll('h3.card-name');
     
     employeeCards.forEach(employee => {
-        const name = `${employee.name.first} ${employee.name.last}`;
+        const name = `${employee.name.first} ${employee.name.last}`.toLowerCase();
         if(name.includes(currentValue)) {
             matchingEmployees.push(employee);
         }
