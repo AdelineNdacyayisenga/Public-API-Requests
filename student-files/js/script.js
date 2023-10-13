@@ -1,18 +1,16 @@
+/**
+ * Treehouse FullStack JavaScript Techdegree Project 5
+ * @author Adeline Ndacyayisenga
+ */
+
 let employeeCards = [];
 const search = document.querySelector('.search-container');
 const gallery = document.getElementById('gallery');
 const body = document.querySelector('body');
 
-/* HTML */
-const searchHTML = `
-    <form action="#" method="get">
-        <input type="search" id="search-input" class="search-input" placeholder="Search...">
-        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
-    </form>
-`;
-search.insertAdjacentHTML('beforeend', searchHTML);
-
-//fetch data
+/**
+ * Fetches data and display the results
+ */
 async function getData() {
     try {
         const response = await fetch('https://randomuser.me/api/?nat=us&results=12');
@@ -25,8 +23,11 @@ async function getData() {
     }
     
 }
-//makes sure only clicks on the card are targeted
-//find a card that matches the name
+
+/**
+ * Event listener; makes sure user only clicks on a card
+ * Finds and displays the card
+ */
 gallery.addEventListener('click', (e) => {
     const currentValue = e.target.closest('.card'); //returns clicked card
 
@@ -42,6 +43,11 @@ gallery.addEventListener('click', (e) => {
     }
 });
 
+/**
+ * Display a modal for the selected card
+ * Emplements a way for user to close the modal
+ * @param {array} card - The array of object properties of the card to display
+ */
 function displayEmployeeModal (card) {
     const modelHTML = `
         <div class="modal-container" data-index="${employeeCards.indexOf(card)}">
@@ -88,6 +94,9 @@ function displayEmployeeModal (card) {
       });
 }
 
+/**
+ * Event Listener for the prev and next buttons; displays modals accordingly
+ */
 document.addEventListener('click', e => {
     const cards = document.querySelectorAll('.card');
     if(e.target.closest('.modal-prev')) {
@@ -135,6 +144,11 @@ document.addEventListener('click', e => {
     }
 });
 
+/**
+ * Formats user phone number
+ * @param {string} phoneString - user's cell
+ * @returns formated phone number (xxx) xxx-xxxx
+ */
 function formatCell (phoneString) {
     const cleaned = ('' + phoneString).replace(/\D/g, '');
     if(cleaned.length === 10) {
@@ -142,13 +156,28 @@ function formatCell (phoneString) {
     }   
 }
 
+/**
+ * Formats user's date of birth
+ * @param {string} dob - user's date of birth details
+ * @returns formated birthdate MM/DD/YYYY
+ */
 function formatDOB (dob) {
     const cleaned = ('' + dob).replace(/\D/g, '');
     const date = cleaned.substring(0,8);
     return date.replace(/(\d{4})(\d{2})(\d{2})/, "$2/$3/$1");
 }
 
-//search functionality
+/**
+ * Implements the search functionality
+ */
+const searchHTML = `
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>
+`;
+search.insertAdjacentHTML('beforeend', searchHTML);
+
 search.addEventListener('keyup', e => {
     let matchingEmployees = [];
     let currentValue = e.target.value.toLowerCase();
@@ -172,6 +201,10 @@ search.addEventListener('keyup', e => {
     } 
 });
 
+/**
+ * Display employee cards
+ * @param {array} data - cards to display on the page
+ */
 function displayEmployees(data) {
     data.map(item => {
         const galleryHTML = `
