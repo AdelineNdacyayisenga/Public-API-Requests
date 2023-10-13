@@ -25,10 +25,8 @@ async function getData() {
     }
     
 }
-
 //makes sure only clicks on the card are targeted
 //find a card that matches the name
-
 gallery.addEventListener('click', (e) => {
     const currentValue = e.target.closest('.card'); //returns clicked card
 
@@ -37,20 +35,14 @@ gallery.addEventListener('click', (e) => {
         employeeName = currentValue.children[1].children[0].textContent;
         
         const similarEmployee = employeeCards.find(employee => `${employee.name.first} ${employee.name.last}` === employeeName);
-        //console.log(similarEmployee);
+        const cardIndex = employeeCards.indexOf(similarEmployee);
         displayEmployeeModal(similarEmployee);
     } else {
         return;
     }
 });
 
-
-
-//const overlay = document.querySelector('.overlay');
-
 function displayEmployeeModal (card) {
-    
-    console.log(card);
     const modelHTML = `
         <div class="modal-container" data-index="${employeeCards.indexOf(card)}">
             <div class="modal">
@@ -75,13 +67,11 @@ function displayEmployeeModal (card) {
     `;
     body.insertAdjacentHTML('beforeend', modelHTML);
     const currentValue = body.querySelector('.modal-container');
-    //close modal when user clicks the X or button
+    //close modal when user clicks the X or button or on the overlay
     document.addEventListener('click', e => {
         if(e.target.className === 'modal-close-btn' || e.target.innerText === 'X') {
             currentValue.remove();
         }
-
-        //close the modal when user clicks outside the modal
         if(e.target.className === 'modal-container') {
             const isOutside = !e.target.closest('.modal-info-container');
             
@@ -90,38 +80,58 @@ function displayEmployeeModal (card) {
             }
         } 
     });
-
+    //close modal if user clicks the escape key
     document.addEventListener('keydown', (e) => {
         if(e.key === 'Escape') {
           currentValue.remove();
         }
       });
-
 }
 
-
-
-
 document.addEventListener('click', e => {
+    const cards = document.querySelectorAll('.card');
     if(e.target.closest('.modal-prev')) {
         const prevButton = document.getElementById('modal-prev');
+        const modalCont = document.querySelector('.modal-container');
+        const currentIndex = +modalCont.dataset.index;
+        if(currentIndex !== 0) {
+            const previousCardName = cards[currentIndex-1].querySelector('h3').textContent;
+            const sameEmployee = employeeCards.find(employee => `${employee.name.first} ${employee.name.last}` === previousCardName);
+            //check if there is already a modal container and remove it before creating a new one
+            if(modalCont !== null) {
+                modalCont.remove();
+            }
+            displayEmployeeModal(sameEmployee);
+        } else {
+            const previousCardName = cards[cards.length-1].querySelector('h3').textContent;
+            const sameEmployee = employeeCards.find(employee => `${employee.name.first} ${employee.name.last}` === previousCardName);
+            if(modalCont !== null) {
+                modalCont.remove();
+            }
+            displayEmployeeModal(sameEmployee);
+        } 
+    }
+    if(e.target.closest('.modal-next')) {
         const nextButton = document.querySelector('#modal-next');
-        const cards = document.querySelectorAll('.card');
-        
-        const modelCont = document.querySelector('.modal-container');
-        const currentIndex = +modelCont.dataset.index;
-        const currentCardName = cards[currentIndex].querySelector('h3').textContent;
-        const previousCardName = cards[currentIndex-1].querySelector('h3').textContent;
-        
-        const sameEmployee = employeeCards.find(employee => `${employee.name.first} ${employee.name.last}` === previousCardName);
-        displayEmployeeModal(sameEmployee);
-        // if(currentIndex === 0) {
-        //     //cards[currentIndex].remove();
-        //     currentIndex = cards.length - 1;
-        //     displayEmployeeModal(cards[currentIndex]);
-            
-        // } 
-        
+        const modalCont = document.querySelector('.modal-container');
+        const currentIndex = +modalCont.dataset.index;
+        //if on the last card, then show the very first one
+        if(currentIndex === 11) {
+            const nextCardName = cards[cards.length - cards.length].querySelector('h3').textContent;
+            const sameEmployee = employeeCards.find(employee => `${employee.name.first} ${employee.name.last}` === nextCardName);
+            //check if there is already a modal container and remove it before creating a new one
+            if(modalCont !== null) {
+                modalCont.remove();
+            }
+            displayEmployeeModal(sameEmployee);
+        } else {
+            const nextCardName = cards[currentIndex+1].querySelector('h3').textContent;
+            const sameEmployee = employeeCards.find(employee => `${employee.name.first} ${employee.name.last}` === nextCardName);
+            if(modalCont !== null) {
+                modalCont.remove();
+            }
+            displayEmployeeModal(sameEmployee);
+        } 
     }
 });
 
@@ -139,7 +149,6 @@ function formatDOB (dob) {
 }
 
 //search functionality
-
 search.addEventListener('keyup', e => {
     let currentValue = e.target.value.toLowerCase();
     let employees = document.querySelectorAll('h3.card-name');
@@ -169,7 +178,6 @@ function displayEmployees(data) {
         `;
         gallery.insertAdjacentHTML('beforeend', galleryHTML);
     });
-
 }
 getData();
 
